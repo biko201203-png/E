@@ -18,21 +18,6 @@ jobs:
       with:
         dotnet-version: '6.0.x'
 
-    - name: Download Complete Game Assemblies
-      run: |
-        mkdir Refs
-        
-        # 1. Download the complete BONELAB references safely using curl
-        curl -L -o refs.zip "https://github.com"
-        powershell Expand-Archive -Path refs.zip -DestinationPath Refs -Force
-        
-        # 2. Download LabFusion safely using curl
-        curl -L -o Refs\LabFusion.dll "https://github.com"
-
-        # 3. Download BoneLib safely using curl
-        curl -L -o Refs\BoneLib.dll "https://github.com"
-      shell: cmd
-
     - name: Auto-Generate Project File
       run: |
         $projectXml = @"
@@ -43,9 +28,9 @@ jobs:
             <Nullable>enable</Nullable>
           </PropertyGroup>
           <ItemGroup>
+            <!-- Official automated packages that load everything without folder errors -->
             <PackageReference Include="LavaGang.MelonLoader" Version="0.6.1" />
-            <Reference Include="Refs\*.dll" />
-            <Reference Include="Refs\**\*.dll" />
+            <PackageReference Include="UnityEngine" Version="1.0.0" />
           </ItemGroup>
         </Project>
         "@

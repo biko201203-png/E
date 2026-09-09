@@ -18,10 +18,15 @@ jobs:
       with:
         dotnet-version: '6.0.x'
 
-    - name: Download BONELAB References
+    - name: Download BONELAB & Unity References
       run: |
+        # Download BONELAB modding reference files
         curl -L -o refs.zip "https://github.com"
         powershell Expand-Archive refs.zip -DestinationPath Refs
+        
+        # Download necessary Unity base assemblies to clear remaining errors
+        curl -L -o unity_refs.zip "https://github.com"
+        powershell Expand-Archive unity_refs.zip -DestinationPath UnityRefs
 
     - name: Auto-Generate Project File
       run: |
@@ -33,16 +38,9 @@ jobs:
             <Nullable>enable</Nullable>
           </PropertyGroup>
           <ItemGroup>
-            <!-- Core MelonLoader References -->
             <PackageReference Include="LavaGang.MelonLoader" Version="0.6.1" />
-            
-            <!-- Unity Engine Core References -->
-            <PackageReference Include="UnityEngineModules.UnityEngine.CoreModule" Version="2021.3.5" />
-            <PackageReference Include="UnityEngineModules.UnityEngine.IMGUIModule" Version="2021.3.5" />
-            <PackageReference Include="UnityEngineModules.UnityEngine.InputLegacyModule" Version="2021.3.5" />
-            <PackageReference Include="UnityEngineModules.UnityEngine.PhysicsModule" Version="2021.3.5" />
-            
             <Reference Include="Refs\*.dll" />
+            <Reference Include="UnityRefs\*.dll" />
           </ItemGroup>
         </Project>
         "@

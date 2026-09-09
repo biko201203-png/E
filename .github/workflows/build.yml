@@ -18,15 +18,17 @@ jobs:
       with:
         dotnet-version: '6.0.x'
 
-    - name: Download BONELAB & Unity References
+    - name: Download BONELAB References
       run: |
-        # Download BONELAB modding reference files
         curl -L -o refs.zip "https://github.com"
         powershell Expand-Archive refs.zip -DestinationPath Refs
-        
-        # Download necessary Unity base assemblies to clear remaining errors
-        curl -L -o unity_refs.zip "https://github.com"
-        powershell Expand-Archive unity_refs.zip -DestinationPath UnityRefs
+
+    - name: Download Unity Assemblies
+      run: |
+        # Using a reliable direct archive link to fetch core Unity engine DLL files
+        curl -L -o unity.zip "https://github.com"
+        mkdir UnityRefs
+        move UnityEngine.CoreModule.dll UnityRefs\
 
     - name: Auto-Generate Project File
       run: |

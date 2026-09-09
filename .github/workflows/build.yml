@@ -33,8 +33,15 @@ jobs:
             <Nullable>enable</Nullable>
           </PropertyGroup>
           <ItemGroup>
-            <!-- This automatically downloads MelonLoader modules to clear your missing assembly errors -->
+            <!-- Core MelonLoader References -->
             <PackageReference Include="LavaGang.MelonLoader" Version="0.6.1" />
+            
+            <!-- Unity Engine Core References -->
+            <PackageReference Include="UnityEngineModules.UnityEngine.CoreModule" Version="2021.3.5" />
+            <PackageReference Include="UnityEngineModules.UnityEngine.IMGUIModule" Version="2021.3.5" />
+            <PackageReference Include="UnityEngineModules.UnityEngine.InputLegacyModule" Version="2021.3.5" />
+            <PackageReference Include="UnityEngineModules.UnityEngine.PhysicsModule" Version="2021.3.5" />
+            
             <Reference Include="Refs\*.dll" />
           </ItemGroup>
         </Project>

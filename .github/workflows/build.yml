@@ -18,16 +18,11 @@ jobs:
       with:
         dotnet-version: '6.0.x'
 
-    - name: Download BONELAB References
+    - name: Download BONELAB & Unity References
       run: |
+        # Pull down the comprehensive public mod references containing BONELAB & MelonLoader dependencies
         curl -L -o refs.zip "https://github.com"
         powershell Expand-Archive refs.zip -DestinationPath Refs
-
-    - name: Download Unity Assemblies
-      run: |
-        mkdir UnityRefs
-        # Downloading the file directly into the correct destination folder
-        curl -L -o UnityRefs\UnityEngine.CoreModule.dll "https://github.com"
 
     - name: Auto-Generate Project File
       run: |
@@ -39,9 +34,9 @@ jobs:
             <Nullable>enable</Nullable>
           </PropertyGroup>
           <ItemGroup>
+            <!-- Pull MelonLoader directly via official package dependencies -->
             <PackageReference Include="LavaGang.MelonLoader" Version="0.6.1" />
             <Reference Include="Refs\*.dll" />
-            <Reference Include="UnityRefs\*.dll" />
           </ItemGroup>
         </Project>
         "@

@@ -18,14 +18,12 @@ jobs:
       with:
         dotnet-version: '6.0.x'
 
-    - name: Download All Mod Dependencies
+    - name: Download Raw References
       run: |
         mkdir Refs
-        curl -L -o bonelab_refs.zip "https://github.com"
-        powershell Expand-Archive -Path bonelab_refs.zip -DestinationPath Refs_Temp -Force
-        powershell "Get-ChildItem -Path Refs_Temp -Filter *.dll -Recurse | Move-Item -Destination Refs -Force"
         curl -L -o Refs\LabFusion.dll "https://github.com"
         curl -L -o Refs\BoneLib.dll "https://github.com"
+        curl -L -o Refs\StressLevelZero.BONELAB.dll "https://github.com"
       shell: cmd
 
     - name: Auto-Generate Project File

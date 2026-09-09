@@ -18,12 +18,20 @@ jobs:
       with:
         dotnet-version: '6.0.x'
 
-    - name: Pre-Fetch Game Libraries
+    - name: Download All Mod Dependencies
       run: |
-        mkdir Refs_Base
-        # This downloads the unstripped BONELAB files to resolve the SLZ & RigManager spaces
-        curl -L -o refs.zip "https://github.com"
-        powershell Expand-Archive -Path refs.zip -DestinationPath Refs_Base -Force
+        mkdir Refs
+        
+        # 1. Download BONELAB reference files
+        curl -L -o bonelab_refs.zip "https://github.com"
+        powershell Expand-Archive -Path bonelab_refs.zip -DestinationPath Refs_Temp -Force
+        
+        # Move all files out of the extracted zip folders straight into \Refs
+        powershell Get-ChildItem -Path Refs_Temp -Filter *.dll -Recurse | Move-Item -Destination Refs -Force
+        
+        # 2. Download LabFusion and BoneLib directly into the \Refs folder
+        curl -L -o Refs\LabFusion.dll "https://github.com"
+        curl -L -o Refs\BoneLib.dll "https://github.com"
       shell: cmd
 
     - name: Auto-Generate Project File
@@ -38,13 +46,7 @@ jobs:
           <ItemGroup>
             <PackageReference Include="LavaGang.MelonLoader" Version="0.6.1" />
             <PackageReference Include="UnityEngine" Version="1.0.0" />
-            
-            <!-- This tells the compiler to look at your uploaded files FIRST -->
-            <Reference Include="*.dll" />
-            <Reference Include="**/*.dll" />
-            
-            <!-- This connects the background engine folder -->
-            <Reference Include="Refs_Base/**/*.dll" />
+            <Reference Include="Refs\*.dll" />
           </ItemGroup>
         </Project>
         "@

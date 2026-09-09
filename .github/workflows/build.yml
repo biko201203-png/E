@@ -21,15 +21,9 @@ jobs:
     - name: Download All Mod Dependencies
       run: |
         mkdir Refs
-        
-        # 1. Download BONELAB reference files
         curl -L -o bonelab_refs.zip "https://github.com"
         powershell Expand-Archive -Path bonelab_refs.zip -DestinationPath Refs_Temp -Force
-        
-        # Move all files out of the extracted zip folders straight into \Refs
-        powershell Get-ChildItem -Path Refs_Temp -Filter *.dll -Recurse | Move-Item -Destination Refs -Force
-        
-        # 2. Download LabFusion and BoneLib directly into the \Refs folder
+        powershell "Get-ChildItem -Path Refs_Temp -Filter *.dll -Recurse | Move-Item -Destination Refs -Force"
         curl -L -o Refs\LabFusion.dll "https://github.com"
         curl -L -o Refs\BoneLib.dll "https://github.com"
       shell: cmd

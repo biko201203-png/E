@@ -18,11 +18,25 @@ jobs:
       with:
         dotnet-version: '6.0.x'
 
-    - name: Download BONELAB & Unity References
+    - name: Download BONELAB, Unity & Fusion References
       run: |
-        # Pull down the comprehensive public mod references containing BONELAB & MelonLoader dependencies
-        curl -L -o refs.zip "https://github.com"
-        powershell Expand-Archive refs.zip -DestinationPath Refs
+        # Create a directory to hold all necessary compilation files
+        mkdir Refs
+        
+        # 1. Download BONELAB modding reference files
+        curl -L -o bonelab_refs.zip "https://github.com"
+        powershell Expand-Archive bonelab_refs.zip -DestinationPath Refs_Temp
+        move Refs_Temp\* Refs\
+        
+        # 2. Download explicit Unity engine dependencies to resolve UnityEngine/Vector3/KeyCode errors
+        curl -L -o unity_refs.zip "https://github.com"
+        powershell Expand-Archive unity_refs.zip -DestinationPath Unity_Temp
+        move Unity_Temp\* Refs\
+        
+        # 3. Download LabFusion references to resolve Fusion namespace errors
+        curl -L -o fusion_refs.zip "https://github.com"
+        move LabFusion.dll Refs\
+      shell: powershell
 
     - name: Auto-Generate Project File
       run: |
@@ -34,8 +48,9 @@ jobs:
             <Nullable>enable</Nullable>
           </PropertyGroup>
           <ItemGroup>
-            <!-- Pull MelonLoader directly via official package dependencies -->
+            <!-- Core MelonLoader References via NuGet -->
             <PackageReference Include="LavaGang.MelonLoader" Version="0.6.1" />
+            <!-- Links every single downloaded game, Unity, and Fusion file cleanly -->
             <Reference Include="Refs\*.dll" />
           </ItemGroup>
         </Project>

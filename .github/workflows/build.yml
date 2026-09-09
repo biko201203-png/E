@@ -33,7 +33,7 @@ jobs:
         # 3. Fetch LabFusion assembly
         curl -L -o Refs\LabFusion.dll "https://github.com"
 
-        # 4. Fetch missing BoneLib assembly to resolve final compilation errors
+        # 4. Fetch missing BoneLib assembly
         curl -L -o Refs\BoneLib.dll "https://github.com"
       shell: cmd
 
@@ -48,6 +48,7 @@ jobs:
           </PropertyGroup>
           <ItemGroup>
             <PackageReference Include="LavaGang.MelonLoader" Version="0.6.1" />
+            <!-- The ** configuration forces the system to look inside all extracted subfolders -->
             <Reference Include="Refs\**\*.dll" />
           </ItemGroup>
         </Project>

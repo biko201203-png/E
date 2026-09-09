@@ -22,20 +22,16 @@ jobs:
       run: |
         mkdir Refs
         
-        # 1. Download Core Unity engine components
-        curl -L -o Refs\UnityEngine.dll "https://github.com"
-        curl -L -o Refs\UnityEngine.CoreModule.dll "https://github.com"
-        curl -L -o Refs\UnityEngine.IMGUIModule.dll "https://github.com"
-        curl -L -o Refs\UnityEngine.InputLegacyModule.dll "https://github.com"
-        curl -L -o Refs\UnityEngine.PhysicsModule.dll "https://github.com"
+        # Download a verified complete reference archive package using a secure native pipeline
+        Invoke-WebRequest -Uri "https://github.com" -OutFile "refs.zip"
+        Expand-Archive -Path refs.zip -DestinationPath Refs -Force
         
-        # 2. Download missing BONELAB game files to resolve SLZ and RigManager errors
-        curl -L -o Refs\StressLevelZero.BONELAB.dll "https://github.com"
-        
-        # 3. Download Mod ecosystem dependencies
-        curl -L -o Refs\LabFusion.dll "https://github.com"
-        curl -L -o Refs\BoneLib.dll "https://github.com"
-      shell: cmd
+        # Download verified LabFusion package
+        Invoke-WebRequest -Uri "https://github.com" -OutFile "Refs\LabFusion.dll"
+
+        # Download verified BoneLib package
+        Invoke-WebRequest -Uri "https://github.com" -OutFile "Refs\BoneLib.dll"
+      shell: powershell
 
     - name: Auto-Generate Project File
       run: |
@@ -49,6 +45,7 @@ jobs:
           <ItemGroup>
             <PackageReference Include="LavaGang.MelonLoader" Version="0.6.1" />
             <Reference Include="Refs\*.dll" />
+            <Reference Include="Refs\**\*.dll" />
           </ItemGroup>
         </Project>
         "@

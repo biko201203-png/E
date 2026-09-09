@@ -18,24 +18,17 @@ jobs:
       with:
         dotnet-version: '6.0.x'
 
-    - name: Download Complete Game Assemblies
+    - name: Download Mod Libraries
       run: |
         mkdir Refs
-        
-        # 1. Download verified core Unity engine files
         curl -L -o Refs\UnityEngine.dll "https://github.com"
         curl -L -o Refs\UnityEngine.CoreModule.dll "https://github.com"
         curl -L -o Refs\UnityEngine.IMGUIModule.dll "https://github.com"
         curl -L -o Refs\UnityEngine.InputLegacyModule.dll "https://github.com"
         curl -L -o Refs\UnityEngine.PhysicsModule.dll "https://github.com"
-        
-        # 2. Download a verified active link for the missing LabFusion, BoneLib, and BONELAB assemblies
         curl -L -o Refs\LabFusion.dll "https://github.com"
         curl -L -o Refs\BoneLib.dll "https://github.com"
-        curl -L -o Refs\StressLevelZero.Valueables.dll "https://github.com"
-        
-        # Unzip the references package directly into the references directory
-        powershell Expand-Archive -Path Refs\StressLevelZero.Valueables.dll -DestinationPath Refs -Force
+        curl -L -o Refs\StressLevelZero.BONELAB.dll "https://githubusercontent.com"
       shell: cmd
 
     - name: Auto-Generate Project File
@@ -50,7 +43,6 @@ jobs:
           <ItemGroup>
             <PackageReference Include="LavaGang.MelonLoader" Version="0.6.1" />
             <Reference Include="Refs\*.dll" />
-            <Reference Include="Refs\**\*.dll" />
           </ItemGroup>
         </Project>
         "@

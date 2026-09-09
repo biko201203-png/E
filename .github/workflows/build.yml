@@ -18,6 +18,15 @@ jobs:
       with:
         dotnet-version: '6.0.x'
 
+    - name: Download Mod Dependencies
+      run: |
+        mkdir Refs
+        # Direct download of flat reference files so they are immediately accessible to the compiler
+        curl -L -o Refs\BoneLib.dll "https://github.com"
+        curl -L -o Refs\LabFusion.dll "https://github.com"
+        curl -L -o Refs\StressLevelZero.BONELAB.dll "https://github.com"
+      shell: cmd
+
     - name: Auto-Generate Project File
       run: |
         $projectXml = @"
@@ -28,9 +37,9 @@ jobs:
             <Nullable>enable</Nullable>
           </PropertyGroup>
           <ItemGroup>
-            <!-- Official automated packages that load everything without folder errors -->
             <PackageReference Include="LavaGang.MelonLoader" Version="0.6.1" />
             <PackageReference Include="UnityEngine" Version="1.0.0" />
+            <Reference Include="Refs\*.dll" />
           </ItemGroup>
         </Project>
         "@

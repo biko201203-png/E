@@ -22,16 +22,19 @@ jobs:
       run: |
         mkdir Refs
         
-        # 1. Download BONELAB reference files using curl
+        # 1. Download BONELAB reference files
         curl -L -o bonelab_refs.zip "https://github.com"
         powershell Expand-Archive -Path bonelab_refs.zip -DestinationPath Refs -Force
         
-        # 2. Download explicit Unity dependencies using curl
+        # 2. Download explicit Unity dependencies
         curl -L -o unity_refs.zip "https://github.com"
         powershell Expand-Archive -Path unity_refs.zip -DestinationPath Refs -Force
         
-        # 3. Fetch LabFusion assembly directly using curl
+        # 3. Fetch LabFusion assembly
         curl -L -o Refs\LabFusion.dll "https://github.com"
+
+        # 4. Fetch missing BoneLib assembly to resolve final compilation errors
+        curl -L -o Refs\BoneLib.dll "https://github.com"
       shell: cmd
 
     - name: Auto-Generate Project File

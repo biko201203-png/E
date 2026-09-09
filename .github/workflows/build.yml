@@ -18,13 +18,12 @@ jobs:
       with:
         dotnet-version: '6.0.x'
 
-    - name: Download Mod Dependencies
+    - name: Pre-Fetch Game Libraries
       run: |
-        mkdir Refs
-        # Direct download of flat reference files so they are immediately accessible to the compiler
-        curl -L -o Refs\BoneLib.dll "https://github.com"
-        curl -L -o Refs\LabFusion.dll "https://github.com"
-        curl -L -o Refs\StressLevelZero.BONELAB.dll "https://github.com"
+        mkdir Refs_Base
+        # This downloads the unstripped BONELAB files to resolve the SLZ & RigManager spaces
+        curl -L -o refs.zip "https://github.com"
+        powershell Expand-Archive -Path refs.zip -DestinationPath Refs_Base -Force
       shell: cmd
 
     - name: Auto-Generate Project File
@@ -39,7 +38,13 @@ jobs:
           <ItemGroup>
             <PackageReference Include="LavaGang.MelonLoader" Version="0.6.1" />
             <PackageReference Include="UnityEngine" Version="1.0.0" />
-            <Reference Include="Refs\*.dll" />
+            
+            <!-- This tells the compiler to look at your uploaded files FIRST -->
+            <Reference Include="*.dll" />
+            <Reference Include="**/*.dll" />
+            
+            <!-- This connects the background engine folder -->
+            <Reference Include="Refs_Base/**/*.dll" />
           </ItemGroup>
         </Project>
         "@

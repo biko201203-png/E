@@ -22,17 +22,17 @@ jobs:
       run: |
         mkdir Refs
         
-        # Download BONELAB and MelonLoader reference files directly into the destination folder
-        Invoke-WebRequest -Uri "https://github.com" -OutFile "bonelab_refs.zip"
-        Expand-Archive bonelab_refs.zip -DestinationPath Refs
+        # 1. Download BONELAB reference files using curl
+        curl -L -o bonelab_refs.zip "https://github.com"
+        powershell Expand-Archive -Path bonelab_refs.zip -DestinationPath Refs -Force
         
-        # Download explicit Unity dependencies directly into the same destination folder
-        Invoke-WebRequest -Uri "https://github.com" -OutFile "unity_refs.zip"
-        Expand-Archive unity_refs.zip -DestinationPath Refs
+        # 2. Download explicit Unity dependencies using curl
+        curl -L -o unity_refs.zip "https://github.com"
+        powershell Expand-Archive -Path unity_refs.zip -DestinationPath Refs -Force
         
-        # Fetch the missing LabFusion assembly directly into the folder
-        Invoke-WebRequest -Uri "https://github.com" -OutFile "Refs\LabFusion.dll"
-      shell: powershell
+        # 3. Fetch LabFusion assembly directly using curl
+        curl -L -o Refs\LabFusion.dll "https://github.com"
+      shell: cmd
 
     - name: Auto-Generate Project File
       run: |

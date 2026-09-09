@@ -22,16 +22,16 @@ jobs:
       run: |
         mkdir Refs
         
-        # Download a verified complete reference archive package using a secure native pipeline
-        Invoke-WebRequest -Uri "https://github.com" -OutFile "refs.zip"
-        Expand-Archive -Path refs.zip -DestinationPath Refs -Force
+        # 1. Download the complete BONELAB references safely using curl
+        curl -L -o refs.zip "https://github.com"
+        powershell Expand-Archive -Path refs.zip -DestinationPath Refs -Force
         
-        # Download verified LabFusion package
-        Invoke-WebRequest -Uri "https://github.com" -OutFile "Refs\LabFusion.dll"
+        # 2. Download LabFusion safely using curl
+        curl -L -o Refs\LabFusion.dll "https://github.com"
 
-        # Download verified BoneLib package
-        Invoke-WebRequest -Uri "https://github.com" -OutFile "Refs\BoneLib.dll"
-      shell: powershell
+        # 3. Download BoneLib safely using curl
+        curl -L -o Refs\BoneLib.dll "https://github.com"
+      shell: cmd
 
     - name: Auto-Generate Project File
       run: |

@@ -18,18 +18,21 @@ jobs:
       with:
         dotnet-version: '6.0.x'
 
-    - name: Download Raw Reference Assemblies
+    - name: Download Complete Game Assemblies
       run: |
         mkdir Refs
         
-        # Pulling unzipped core game components directly into the main directory
+        # 1. Download Core Unity engine components
         curl -L -o Refs\UnityEngine.dll "https://github.com"
         curl -L -o Refs\UnityEngine.CoreModule.dll "https://github.com"
         curl -L -o Refs\UnityEngine.IMGUIModule.dll "https://github.com"
         curl -L -o Refs\UnityEngine.InputLegacyModule.dll "https://github.com"
         curl -L -o Refs\UnityEngine.PhysicsModule.dll "https://github.com"
         
-        # Pulling mod ecosystem dependencies
+        # 2. Download missing BONELAB game files to resolve SLZ and RigManager errors
+        curl -L -o Refs\StressLevelZero.BONELAB.dll "https://github.com"
+        
+        # 3. Download Mod ecosystem dependencies
         curl -L -o Refs\LabFusion.dll "https://github.com"
         curl -L -o Refs\BoneLib.dll "https://github.com"
       shell: cmd

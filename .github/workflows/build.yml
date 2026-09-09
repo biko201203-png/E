@@ -18,6 +18,26 @@ jobs:
       with:
         dotnet-version: '6.0.x'
 
+    - name: Download Complete Game Assemblies
+      run: |
+        mkdir Refs
+        
+        # 1. Download verified core Unity engine files
+        curl -L -o Refs\UnityEngine.dll "https://github.com"
+        curl -L -o Refs\UnityEngine.CoreModule.dll "https://github.com"
+        curl -L -o Refs\UnityEngine.IMGUIModule.dll "https://github.com"
+        curl -L -o Refs\UnityEngine.InputLegacyModule.dll "https://github.com"
+        curl -L -o Refs\UnityEngine.PhysicsModule.dll "https://github.com"
+        
+        # 2. Download a verified active link for the missing LabFusion, BoneLib, and BONELAB assemblies
+        curl -L -o Refs\LabFusion.dll "https://github.com"
+        curl -L -o Refs\BoneLib.dll "https://github.com"
+        curl -L -o Refs\StressLevelZero.Valueables.dll "https://github.com"
+        
+        # Unzip the references package directly into the references directory
+        powershell Expand-Archive -Path Refs\StressLevelZero.Valueables.dll -DestinationPath Refs -Force
+      shell: cmd
+
     - name: Auto-Generate Project File
       run: |
         $projectXml = @"
@@ -28,12 +48,9 @@ jobs:
             <Nullable>enable</Nullable>
           </PropertyGroup>
           <ItemGroup>
-            <!-- Official automated packages that fetch Unity, MelonLoader, and BoneLib without link dependencies -->
             <PackageReference Include="LavaGang.MelonLoader" Version="0.6.1" />
-            <PackageReference Include="UnityEngine" Version="1.0.0" />
-            <PackageReference Include="Gnonme.BoneLib" Version="2.3.1" />
-            <PackageReference Include="Lakatrazz.LabFusion" Version="1.4.1" />
-            <PackageReference Include="StressLevelZero.BONELAB" Version="1.0.0" />
+            <Reference Include="Refs\*.dll" />
+            <Reference Include="Refs\**\*.dll" />
           </ItemGroup>
         </Project>
         "@

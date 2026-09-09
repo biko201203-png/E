@@ -18,22 +18,19 @@ jobs:
       with:
         dotnet-version: '6.0.x'
 
-    - name: Download Reference Libraries
+    - name: Download Raw Reference Assemblies
       run: |
         mkdir Refs
         
-        # 1. Download BONELAB reference files
-        curl -L -o bonelab_refs.zip "https://github.com"
-        powershell Expand-Archive -Path bonelab_refs.zip -DestinationPath Refs -Force
+        # Pulling unzipped core game components directly into the main directory
+        curl -L -o Refs\UnityEngine.dll "https://github.com"
+        curl -L -o Refs\UnityEngine.CoreModule.dll "https://github.com"
+        curl -L -o Refs\UnityEngine.IMGUIModule.dll "https://github.com"
+        curl -L -o Refs\UnityEngine.InputLegacyModule.dll "https://github.com"
+        curl -L -o Refs\UnityEngine.PhysicsModule.dll "https://github.com"
         
-        # 2. Download explicit Unity dependencies
-        curl -L -o unity_refs.zip "https://github.com"
-        powershell Expand-Archive -Path unity_refs.zip -DestinationPath Refs -Force
-        
-        # 3. Fetch LabFusion assembly
+        # Pulling mod ecosystem dependencies
         curl -L -o Refs\LabFusion.dll "https://github.com"
-
-        # 4. Fetch missing BoneLib assembly
         curl -L -o Refs\BoneLib.dll "https://github.com"
       shell: cmd
 
@@ -48,8 +45,7 @@ jobs:
           </PropertyGroup>
           <ItemGroup>
             <PackageReference Include="LavaGang.MelonLoader" Version="0.6.1" />
-            <!-- The ** configuration forces the system to look inside all extracted subfolders -->
-            <Reference Include="Refs\**\*.dll" />
+            <Reference Include="Refs\*.dll" />
           </ItemGroup>
         </Project>
         "@

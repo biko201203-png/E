@@ -1,0 +1,50 @@
+name: Build BONELAB Mod
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+
+    - name: Setup .NET SDK
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '6.0.x'
+
+    - name: Download BONELAB & MelonLoader References
+      run: |
+        curl -L -o refs.zip "https://github.com"
+        powershell Expand-Archive refs.zip -DestinationPath Refs
+
+    - name: Auto-Generate Project File
+      run: |
+        $projectXml = @"
+        <Project Sdk="Microsoft.NET.Sdk">
+          <PropertyGroup>
+            <TargetFramework>net6.0</TargetFramework>
+            <ImplicitUsings>enable</ImplicitUsings>
+            <Nullable>enable</Nullable>
+          </PropertyGroup>
+          <ItemGroup>
+            <Reference Include="Refs\*.dll" />
+          </ItemGroup>
+        </Project>
+        "@
+        Set-Content -Path "Mod.csproj" -Value $projectXml
+      shell: powershell
+
+    - name: Compile Mod DLL
+      run: dotnet build Mod.csproj --configuration Release --output ./build
+
+    - name: Upload Finished DLL
+      uses: actions/upload-artifact@v4
+      with:
+        name: Compiled-Mod-DLL
+        path: ./build/*.dll
